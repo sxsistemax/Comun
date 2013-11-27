@@ -1,0 +1,76 @@
+object fmFormaBase: TfmFormaBase
+  Left = 350
+  Top = 177
+  Width = 402
+  Height = 294
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poMainFormCenter
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 394
+    Height = 41
+    Align = alTop
+    BevelOuter = bvNone
+    TabOrder = 0
+  end
+  object Panel2: TPanel
+    Left = 0
+    Top = 233
+    Width = 394
+    Height = 27
+    Align = alBottom
+    BevelOuter = bvNone
+    TabOrder = 1
+    object JvEnterAsTab1: TJvEnterAsTab
+      Left = 0
+      Top = 0
+      Width = 28
+      Height = 28
+    end
+    object Panel3: TPanel
+      Left = 235
+      Top = 0
+      Width = 159
+      Height = 27
+      Align = alRight
+      BevelOuter = bvNone
+      TabOrder = 0
+      object BitBtn1: TBitBtn
+        Left = 0
+        Top = 0
+        Width = 75
+        Height = 25
+        Caption = 'Aceptar'
+        TabOrder = 0
+        Kind = bkOK
+      end
+      object BitBtn2: TBitBtn
+        Left = 80
+        Top = 0
+        Width = 75
+        Height = 25
+        Caption = '&Cerrar'
+        TabOrder = 1
+        Kind = bkClose
+      end
+    end
+  end
+  object Panel4: TPanel
+    Left = 0
+    Top = 41
+    Width = 394
+    Height = 192
+    Align = alClient
+    BevelOuter = bvNone
+    TabOrder = 2
+  end
+end
