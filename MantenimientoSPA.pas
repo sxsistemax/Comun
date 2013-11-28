@@ -82,8 +82,6 @@ type
 
 implementation
 
-uses uDatos;
-
 
 
 {$R *.DFM}
@@ -128,6 +126,7 @@ Procedure TfmBaseMantenimiento.PrProcesarBoton( mBoton : TNavigateBtn);
 var
   lRegresarAConsulta : boolean;
 Begin
+  lRegresarAConsulta := false;
   Case MBoton Of
     nbPost   : Begin
                  if Validar then
