@@ -217,8 +217,8 @@ begin
         try
           Post;
           Result := True
-        except
-          ShowMessage( 'No se pudo actualizar la informción en el archivo.');
+        except on E: Exception do
+          ShowMessage( 'No se pudo actualizar la informción en el archivo. ' + E.Message);
         end
       else
       begin
@@ -262,7 +262,7 @@ end;
 
 function TfmBaseMantenimiento.Validar: boolean;
 begin
-  //Result := true;
+  Result := true;
 end;
 
 procedure TfmBaseMantenimiento.ValorBusquedaExit(Sender: TObject);
@@ -279,10 +279,10 @@ begin
   if cbCampoBusqueda.Items.Count > 0 then
   begin
     Panel3.Visible := true;
-    FdsConsulta := TDataSource.Create( self);
-    FConsulta   := TDBISAMQuery.Create( self);
-    FdsConsulta.DataSet := FConsulta;
-    dgGrid.DataSource := FdsConsulta;
+//    FdsConsulta := TDataSource.Create( self);
+//    FConsulta   := TDBISAMQuery.Create( self);
+//    FdsConsulta.DataSet := FConsulta;
+//    dgGrid.DataSource := FdsConsulta;
     DBNavigator1.VisibleButtons := [nbInsert, nbEdit, nbDelete];
   end
   else
@@ -360,7 +360,7 @@ end;
 
 procedure TfmBaseMantenimiento.OcultarCamposGrid;
 begin
-// Implementar en el desendiente para ocultar los campos en el grid
+// Implementar en el desendente para ocultar los campos en el grid
 end;
 
 procedure TfmBaseMantenimiento.DBNavigator1Click(Sender: TObject;
