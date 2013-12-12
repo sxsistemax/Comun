@@ -5,7 +5,8 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, Db, Grids, DBGrids, StdCtrls, Buttons, DBCtrls, ComCtrls, Mask, DbTables,
-  JvComponent, JvEnterTab,  dbisamtb, JvExControls, JvComponentBase;
+  JvComponent, JvEnterTab,  dbisamtb, JvExControls, JvComponentBase,
+  JvExStdCtrls, JvEdit, JvDBSearchEdit;
 
 type
   TfmBaseMantenimiento = class(TForm)
@@ -20,19 +21,18 @@ type
     dsDataSource: TDataSource;
     btCancelar: TBitBtn;
     btAceptar: TBitBtn;
-    Panel3: TPanel;
+    pBusqueda: TPanel;
     Label13: TLabel;
     JvEnterAsTab1: TJvEnterAsTab;
     Panel4: TPanel;
     cbCampoBusqueda: TComboBox;
-    ValorBusqueda: TEdit;
     cbFiltroConsulta: TComboBox;
     btSeleccionar: TBitBtn;
-    btAyuda: TBitBtn;
     Bevel1: TBevel;
     Bevel2: TBevel;
     Bevel3: TBevel;
     Bevel4: TBevel;
+    eBuscar: TJvDBSearchEdit;
     procedure btCerrarClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure DBNavigator1BeforeAction(Sender: TObject;
@@ -49,7 +49,6 @@ type
     function  ValorFiltro : string; virtual;
     procedure OcultarCamposGrid; virtual;
     function Validar : boolean; virtual;
-    procedure ValorBusquedaExit(Sender: TObject);
     procedure cbCampoBusquedaChange(Sender: TObject);
     procedure PageControl1Change(Sender: TObject);
     procedure DBNavigator1Click(Sender: TObject; Button: TNavigateBtn);
@@ -88,6 +87,8 @@ implementation
 
 procedure TfmBaseMantenimiento.btCerrarClick(Sender: TObject);
 begin
+  dsDataSource.DataSet.Filtered := false;
+  dsDataSource.DataSet.Filter := '';
   PrProcesarBoton( nbCancel);
   Close;
 end;
@@ -265,11 +266,6 @@ begin
   Result := true;
 end;
 
-procedure TfmBaseMantenimiento.ValorBusquedaExit(Sender: TObject);
-begin
-  dgGrid.DataSource.DataSet.Locate( cbCampoBusqueda.Text, ValorBusqueda.Text, [loPartialKey]);
-end;
-
 procedure TfmBaseMantenimiento.CargarCamposBusqueda;
 begin
   // Sirve para cargar los campos que se utilizaran en la busqueda
@@ -278,16 +274,13 @@ begin
   // luego busca si tiene algun item y muestra el panel de busqueda
   if cbCampoBusqueda.Items.Count > 0 then
   begin
-    Panel3.Visible := true;
-//    FdsConsulta := TDataSource.Create( self);
-//    FConsulta   := TDBISAMQuery.Create( self);
-//    FdsConsulta.DataSet := FConsulta;
-//    dgGrid.DataSource := FdsConsulta;
+    pBusqueda.Visible := true;
     DBNavigator1.VisibleButtons := [nbInsert, nbEdit, nbDelete];
   end
   else
-    Panel3.Visible := false;
+    pBusqueda.Visible := false;
 end;
+
 
 procedure TfmBaseMantenimiento.EjecutarConsulta;
 var
@@ -296,50 +289,18 @@ var
 begin
   if cbCampoBusqueda.Items.Count > 0 then
   begin
-    try
-      FConsulta.Close;
-      FConsulta.DatabaseName := TDBISAMTable( dsDataSource.DataSet).DatabaseName;
-      if FConsulta.DatabaseName = '' then
-        FConsulta.DatabaseName := TDBISAMTable( dsDataSource.DataSet).DatabaseName;
-
-      // arma la consulta segun los nombres de campo del grid
-      if s = '' then
-      begin
-        s := 'select ';
-        for i := 0 to dsDataSource.DataSet.FieldCount - 1 do
-        begin
-          if not dsDataSource.DataSet.Fields[ i].Calculated then
-            s := s + dsDataSource.DataSet.Fields[ i].FieldName + ',';
-        end;
-        System.Delete( s, Length(s), 1);
-        s := s + ' from ' + TTable( dsDataSource.DataSet).TableName;
-      end;
-
-      // adicione la condicion
-      if cbFiltroConsulta.Visible then
-      begin
-        s := s + ' where ' + FCampoFiltro + ' = ';
-        if FFiltroString then
-          s := s + QuotedStr( ValorFiltro)
-        else
-          s := s + ValorFiltro;
-      end;
-
-      s := s + ' order by ' + cbCampoBusqueda.Text;
-      FConsulta.SQL.Text := s;
-
-      FConsulta.Open;
-    except
-
-    end;
-
+    if cbCampoBusqueda.ItemIndex > 0 then
+      eBuscar.DataField := cbCampoBusqueda.Items[cbCampoBusqueda.ItemIndex]
+    else
+      eBuscar.DataField := FCampoClave;
   end;
 end;
+
 
 procedure TfmBaseMantenimiento.cbCampoBusquedaChange(Sender: TObject);
 begin
   EjecutarConsulta;
-  ValorBusqueda.SetFocus;
+  eBuscar.SetFocus;
 end;
 
 procedure TfmBaseMantenimiento.PageControl1Change(Sender: TObject);
